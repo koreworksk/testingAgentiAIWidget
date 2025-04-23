@@ -16,10 +16,23 @@
 
   <script>
     // Trigger getUserContext event to liveInteraction
-    function getUserContext() {
-      console.log("📤 Sending postMessage: getUserContext");
-      window.parent.postMessage({ type: "getUserContext" }, "*");
+    
+
+    function getConversationContext() {
+    let message = {
+    action: 'getUserContext'
+    };
+    window.parent.postMessage(message, '*')
     }
+
+    function copyText() {
+    let message = {
+    action: 'copyText',
+    text: 'text from widget direct to smartassist' //can be modified accordingly
+    };
+    window.parent.postMessage(message, '*')
+    }
+
 
     // Listen for messages from liveInteraction
     window.addEventListener("message", async (event) => {
@@ -51,13 +64,13 @@
 
     document.getElementById("requestContext").addEventListener("click", () => {
       console.log("🖱️ Get Agent Context button clicked");
-      getUserContext();
+      getConversationContext();
     });
 
     // Optional trigger on load
     window.onload = () => {
       console.log("🌐 Window loaded, requesting user context...");
-      getUserContext();
+      getConversationContext();
     };
   </script>
 </body>

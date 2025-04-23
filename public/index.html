@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agent Widget with Event Triggers</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #display { border: 1px solid #ccc; padding: 10px; min-height: 60px; margin-top: 10px; }
+    #sendButton { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>External Widget</h2>
+  <button id="requestContext">Get Agent Context</button>
+  <div id="display">Waiting for user context...</div>
+
+  <script>
+    // Trigger getUserContext event to liveInteraction
+    function getUserContext() {
+      window.parent.postMessage({ type: "getUserContext" }, "*");
+    }
+
+    // Listen for messages from liveInteraction
+    window.addEventListener("message", async (event) => {
+      if (event.data?.type === "userContext") {
+        const message = event.data?.data?.lastAgentMessage || "No context received.";
+        
+        // Show on page
+        document.getElementById("display").innerText = `Agent said: ${message}`;
+
+        // Send to backend
+        const res = await fetch("/api/agent-message", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+
+        // Send processed response to agent compose bar
+        window.parent.postMessage({ type: "copyText", message: data.response }, "*");
+      }
+    });
+
+    document.getElementById("requestContext").addEventListener("click", getUserContext);
+
+    // Optionally trigger on load too
+    window.onload = getUserContext;
+  </script>
+</body>
+</html>

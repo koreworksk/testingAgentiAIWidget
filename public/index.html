@@ -17,18 +17,23 @@
   <script>
     // Trigger getUserContext event to liveInteraction
     function getUserContext() {
+      console.log("📤 Sending postMessage: getUserContext");
       window.parent.postMessage({ type: "getUserContext" }, "*");
     }
 
     // Listen for messages from liveInteraction
     window.addEventListener("message", async (event) => {
+      console.log("📥 Message received from parent:", event.data);
+
       if (event.data?.type === "userContext") {
         const message = event.data?.data?.lastAgentMessage || "No context received.";
-        
+        console.log("✅ User context received:", message);
+
         // Show on page
         document.getElementById("display").innerText = `Agent said: ${message}`;
 
         // Send to backend
+        console.log("📤 Sending to backend /api/agent-message:", { message });
         const res = await fetch("/api/agent-message", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -36,16 +41,24 @@
         });
 
         const data = await res.json();
+        console.log("✅ Response from backend:", data);
 
         // Send processed response to agent compose bar
+        console.log("📤 Sending copyText to parent:", data.response);
         window.parent.postMessage({ type: "copyText", message: data.response }, "*");
       }
     });
 
-    document.getElementById("requestContext").addEventListener("click", getUserContext);
+    document.getElementById("requestContext").addEventListener("click", () => {
+      console.log("🖱️ Get Agent Context button clicked");
+      getUserContext();
+    });
 
-    // Optionally trigger on load too
-    window.onload = getUserContext;
+    // Optional trigger on load
+    window.onload = () => {
+      console.log("🌐 Window loaded, requesting user context...");
+      getUserContext();
+    };
   </script>
 </body>
 </html>

@@ -2,6 +2,7 @@ const axios = require('axios');
 
 async function processMessage(message) {
   // Simulate an external API call using the message
+  console.log("this is the message", message)
 let data = JSON.stringify({
   "sessionIdentity": [
     {
@@ -49,7 +50,6 @@ axios.request(config)
   return "API is not working please bear us"
 });
 
-  const response = `Processed message from agent: "${message}"`;
   
 }
 

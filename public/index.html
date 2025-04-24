@@ -45,14 +45,14 @@
       console.log("testing event")
       console.log("messages", event.data?.data?.messages)
       if (Array.isArray(event.data?.data?.messages)) {
-        const lastUserMessage = getLastUserMessage(event.data.data.messages);
-        console.log("🧑‍💬 Last user message:", lastUserMessage);
+        const message = getLastUserMessage(event.data.data.messages);
+        console.log("🧑‍💬 Last user message:", message);
   
         // Send to backend
         fetch("/api/agent-message", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lastUserMessage })
+          body: JSON.stringify({ message })
         })
         .then(res => res.json())
         .then(data => {

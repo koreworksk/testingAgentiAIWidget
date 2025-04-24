@@ -43,7 +43,7 @@
     window.addEventListener("message", function(event) {
       console.log("📥 Message received from parent:", event.data);
   
-      if (event.data?.type === "userContext" && Array.isArray(event.data.messages)) {
+      if (Array.isArray(event.data.messages)) {
         const lastUserMessage = getLastUserMessage(event.data.messages);
         console.log("🧑‍💬 Last user message:", lastUserMessage);
   

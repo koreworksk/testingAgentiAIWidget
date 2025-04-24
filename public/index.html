@@ -34,23 +34,14 @@
     }
 
 
-    // Listen for messages from liveInteraction
-    window.addEventListener("message", async (event) => {
+    
       console.log("📥 Message received from parent:", event.data);
-
-      if (event.data?.type === "userContext") {
-        const message = event.data?.data?.lastAgentMessage || "No context received.";
-        console.log("✅ User context received:", message);
-
-        // Show on page
-        document.getElementById("display").innerText = `Agent said: ${message}`;
-
-        // Send to backend
-        console.log("📤 Sending to backend /api/agent-message:", { message });
-        const res = await fetch("/api/agent-message", {
+      var lastUserMessage = getLastUserMessage(event.data.messages)
+      console.log("last user message", lastUserMessage)
+      const res = await fetch("/api/agent-message", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message })
+          body: JSON.stringify({ lastUserMessage })
         });
 
         const data = await res.json();
@@ -59,8 +50,7 @@
         // Send processed response to agent compose bar
         console.log("📤 Sending copyText to parent:", data.response);
         window.parent.postMessage({ type: "copyText", message: data.response }, "*");
-      }
-    });
+
 
     document.getElementById("requestContext").addEventListener("click", () => {
       console.log("🖱️ Get Agent Context button clicked");

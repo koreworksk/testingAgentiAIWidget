@@ -11,8 +11,9 @@
 </head>
 <body>
   <h2>External Widget</h2>
-  <button id="requestContext">Get Agent Context</button>
-  <div id="displayText2">Waiting for user context...</div>
+  <button id="copyText">Copy text to console</button>
+  <button id="requestContext">Get Agent Help</button>
+  <div id="displayText2">Please wait while I get you help...</div>
 
   <script>
     function getConversationContext() {
@@ -69,12 +70,17 @@
       }
     });
   
-    document.getElementById("requestContext").addEventListener("click", function() {
-      console.log("🖱️ Get Agent Context button clicked");
+    document.getElementById("copyText").addEventListener("click", function() {
+      console.log("🖱️ Get copy context button clicked");
       let displayText = document.getElementById("displayText2").innerHTML;
       copyText(displayText);
     });
-  
+    
+    document.getElementById("requestContext").addEventListener("click", function() {
+      console.log("🖱️ Get Agent Context button clicked");
+    //   let displayText = document.getElementById("requestContext").innerHTML;
+        getConversationContext();
+    });
     // Optional trigger on load
     window.onload = function() {
       console.log("🌐 Window loaded, requesting user context...");

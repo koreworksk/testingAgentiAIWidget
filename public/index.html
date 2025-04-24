@@ -12,7 +12,7 @@
 <body>
   <h2>External Widget</h2>
   <button id="requestContext">Get Agent Context</button>
-  <div id="display">Waiting for user context...</div>
+  <div id="displayText2">Waiting for user context...</div>
 
   <script>
     function getConversationContext() {
@@ -22,7 +22,7 @@
       window.parent.postMessage(message, '*');
     }
   
-    function copyText(text = 'text from widget direct to smartassist') {
+    function copyText(text) {
       const message = {
         action: 'copyText',
         text: text
@@ -44,7 +44,7 @@
       console.log("📥 Message received from parent:", event.data);
       console.log("testing event")
       console.log("messages", event.data?.data?.messages)
-      if (Array.isArray(event.data.messages)) {
+      if (Array.isArray(event.data?.data?.messages)) {
         const lastUserMessage = getLastUserMessage(event.data.messages);
         console.log("🧑‍💬 Last user message:", lastUserMessage);
   
@@ -59,6 +59,10 @@
           console.log("✅ Response from backend:", data);
           // Send processed response to agent compose bar
           console.log("📤 Sending copyText to parent:", data.response);
+          let displayText = document.getElementById("displayText2");
+          if(displayText.length){
+            displayText.innerHTML = data.response;
+          }
           window.parent.postMessage({ type: "copyText", message: data.response }, "*");
         })
         .catch(error => {
@@ -69,7 +73,8 @@
   
     document.getElementById("requestContext").addEventListener("click", function() {
       console.log("🖱️ Get Agent Context button clicked");
-      getConversationContext();
+      let displayText = document.getElementById("displayText2").innerHTML;
+      copyText(displayText);
     });
   
     // Optional trigger on load

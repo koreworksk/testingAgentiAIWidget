@@ -21,9 +21,9 @@ async function processMessage(message) {
   const config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: 'https://agent-platform.kore.ai/api/v2/apps/aa-b73dd416-6b4a-4199-b479-d2301c945972/environments/draft/runs/execute',
+    url: 'https://agent-platform.kore.ai/api/v2/apps/aa-b73dd416-6b4a-4199-b479-d2301c945972/environments/stagging/runs/execute',
     headers: { 
-      'x-api-key': 'kg-81fc14c0-e961-4adf-972b-10f87d8087cb.79b08e68-37d1-4f88-9257-2ab5528eb78a', 
+      'x-api-key': 'kg-28835835-d7e4-41fc-961b-95290ce05e9c.663918aa-1b28-4e79-b7f3-642eb26a49ea', 
       'Content-Type': 'application/json'
     },
     data: data

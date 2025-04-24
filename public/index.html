@@ -15,53 +15,68 @@
   <div id="display">Waiting for user context...</div>
 
   <script>
-    // Trigger getUserContext event to liveInteraction
-    
-
     function getConversationContext() {
-    let message = {
-    action: 'getUserContext'
-    };
-    window.parent.postMessage(message, '*')
+      const message = {
+        action: 'getUserContext'
+      };
+      window.parent.postMessage(message, '*');
     }
-
-    function copyText() {
-    let message = {
-    action: 'copyText',
-    text: 'text from widget direct to smartassist' //can be modified accordingly
-    };
-    window.parent.postMessage(message, '*')
+  
+    function copyText(text = 'text from widget direct to smartassist') {
+      const message = {
+        action: 'copyText',
+        text: text
+      };
+      window.parent.postMessage(message, '*');
     }
-
-
-    
+  
+    function getLastUserMessage(messages) {
+      for (let i = messages.length - 1; i >= 0; i--) {
+        if (messages[i].author?.type === "USER") {
+          return messages[i].value;
+        }
+      }
+      return null;
+    }
+  
+    // Listen for messages from liveInteraction
+    window.addEventListener("message", function(event) {
       console.log("📥 Message received from parent:", event.data);
-      var lastUserMessage = getLastUserMessage(event.data.messages)
-      console.log("last user message", lastUserMessage)
-      const res = await fetch("/api/agent-message", {
+  
+      if (event.data?.type === "userContext" && Array.isArray(event.data.messages)) {
+        const lastUserMessage = getLastUserMessage(event.data.messages);
+        console.log("🧑‍💬 Last user message:", lastUserMessage);
+  
+        // Send to backend
+        fetch("/api/agent-message", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ lastUserMessage })
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log("✅ Response from backend:", data);
+          // Send processed response to agent compose bar
+          console.log("📤 Sending copyText to parent:", data.response);
+          window.parent.postMessage({ type: "copyText", message: data.response }, "*");
+        })
+        .catch(error => {
+          console.error("❌ Error sending to backend:", error);
         });
-
-        const data = await res.json();
-        console.log("✅ Response from backend:", data);
-
-        // Send processed response to agent compose bar
-        console.log("📤 Sending copyText to parent:", data.response);
-        window.parent.postMessage({ type: "copyText", message: data.response }, "*");
-
-
-    document.getElementById("requestContext").addEventListener("click", () => {
-      console.log("🖱️ Get Agent Context button clicked");
-      copyText();
+      }
     });
-
+  
+    document.getElementById("requestContext").addEventListener("click", function() {
+      console.log("🖱️ Get Agent Context button clicked");
+      getConversationContext();
+    });
+  
     // Optional trigger on load
-    window.onload = () => {
+    window.onload = function() {
       console.log("🌐 Window loaded, requesting user context...");
       getConversationContext();
     };
   </script>
+  
 </body>
 </html>

@@ -1,9 +1,7 @@
+const axios = require('axios');
+
 async function processMessage(message) {
   // Simulate an external API call using the message
-
-
-
-const axios = require('axios');
 let data = JSON.stringify({
   "sessionIdentity": [
     {

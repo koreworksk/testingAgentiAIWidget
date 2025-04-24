@@ -45,7 +45,7 @@
       console.log("testing event")
       console.log("messages", event.data?.data?.messages)
       if (Array.isArray(event.data?.data?.messages)) {
-        const lastUserMessage = getLastUserMessage(event.data.messages);
+        const lastUserMessage = getLastUserMessage(event.data.data.messages);
         console.log("🧑‍💬 Last user message:", lastUserMessage);
   
         // Send to backend

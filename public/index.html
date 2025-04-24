@@ -60,9 +60,7 @@
           // Send processed response to agent compose bar
           console.log("📤 Sending copyText to parent:", data.response);
           let displayText = document.getElementById("displayText2");
-          if(displayText.length){
             displayText.innerHTML = data.response;
-          }
           window.parent.postMessage({ type: "copyText", message: data.response }, "*");
         })
         .catch(error => {

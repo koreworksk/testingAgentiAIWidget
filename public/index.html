@@ -42,7 +42,8 @@
     // Listen for messages from liveInteraction
     window.addEventListener("message", function(event) {
       console.log("📥 Message received from parent:", event.data);
-        console.log("messages", event.data?.data?.messages)
+      console.log("testing event")
+      console.log("messages", event.data?.data?.messages)
       if (Array.isArray(event.data.messages)) {
         const lastUserMessage = getLastUserMessage(event.data.messages);
         console.log("🧑‍💬 Last user message:", lastUserMessage);
